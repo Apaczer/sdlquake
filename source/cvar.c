@@ -290,6 +290,9 @@ Cvar_RegisterVariable(cvar_t *variable)
     value[511] = '\0';
     variable->string = Z_Malloc(1);
 
+    if (!(variable->flags & CVAR_CALLBACK))
+        variable->callback = NULL;
+
     /*
      * FIXME (BARF) - readonly cvars need to be initialised
      *                developer 1 allows set
@@ -299,6 +302,21 @@ Cvar_RegisterVariable(cvar_t *variable)
     developer.value = 1;
     Cvar_Set(variable->name, value);
     developer.value = old_developer;
+}
+
+/*
+============
+Cvar_SetCallback
+
+Set a callback function to the var
+============
+*/
+void Cvar_SetCallback (cvar_t *var, cvar_callback func)
+{
+	var->callback = func;
+	if (func)
+		var->flags |= CVAR_CALLBACK;
+	else	var->flags &= ~CVAR_CALLBACK;
 }
 
 /*

@@ -183,6 +183,8 @@ void COM_Init(void);
 void COM_InitArgv(int argc, const char **argv);
 
 const char *COM_SkipPath(const char *pathname);
+const char *COM_FileExtension(const char *in);
+qboolean COM_FileExists(const char *filename);
 void COM_StripExtension(const char *filename, char *out, size_t buflen);
 void COM_FileBase(const char *in, char *out, size_t buflen);
 int COM_DefaultExtension(const char *path, const char *extension,
@@ -200,6 +202,7 @@ struct cache_user_s;
 
 extern char com_basedir[MAX_OSPATH];
 extern char com_gamedir[MAX_OSPATH];
+extern int file_from_pak; // global indicating that file came from a pak
 
 void COM_WriteFile(const char *filename, const void *data, int len);
 int COM_FOpenFile(const char *filename, FILE **file);
@@ -240,5 +243,31 @@ int build_number(void);
 
 extern char gamedirfile[];
 #endif
+
+/* The following FS_*() stdio replacements are necessary if one is
+ * to perform non-sequential reads on files reopened on pak files
+ * because we need the bookkeeping about file start/end positions.
+ * Allocating and filling in the fshandle_t structure is the users'
+ * responsibility when the file is initially opened. */
+
+typedef struct _fshandle_t
+{
+	FILE *file;
+	qboolean pak;	/* is the file read from a pak */
+	long start;	/* file or data start position */
+	long length;	/* file or data size */
+	long pos;	/* current position relative to start */
+} fshandle_t;
+
+size_t FS_fread(void *ptr, size_t size, size_t nmemb, fshandle_t *fh);
+int FS_fseek(fshandle_t *fh, long offset, int whence);
+long FS_ftell(fshandle_t *fh);
+void FS_rewind(fshandle_t *fh);
+int FS_feof(fshandle_t *fh);
+int FS_ferror(fshandle_t *fh);
+int FS_fclose(fshandle_t *fh);
+int FS_fgetc(fshandle_t *fh);
+char *FS_fgets(char *s, int size, fshandle_t *fh);
+long FS_filelength (fshandle_t *fh);
 
 #endif /* COMMON_H */

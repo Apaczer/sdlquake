@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "screen.h"
 #include "server.h"
 #include "sound.h"
+#include "bgmusic.h"
+#include "cdaudio.h"
 
 // we need to declare some mouse variables here, because the menu system
 // references them even when on a unix system.
@@ -146,6 +148,8 @@ CL_Disconnect(void)
 {
 // stop sounds (especially looping!)
     S_StopAllSounds(true);
+    BGM_Stop();
+    CDAudio_Stop();
 
     /* Clear up view, remove palette shift */
     scr_centertime_off = 0;
