@@ -2,9 +2,13 @@
 PROGRAM = sdlquake
 
 # Compiler
-CC := gcc
-CXX := gcc
-STRIP := 
+CC := $(CROSS_COMPILE)gcc
+CXX := $(CROSS_COMPILE)g++
+STRIP := $(CROSS_COMPILE)strip
+SYSROOT ?= $(shell $(CC) --print-sysroot)
+
+# Using SDL as video/audio backend
+PKGS = sdl
 
 TYR_RELEASE := v0.62-pre
 TYR_GIT := $(shell git describe --dirty 2> /dev/null)
@@ -43,18 +47,18 @@ $(error Invalid MP3LIB setting)
 endif
 endif
 ifeq ($(MP3LIB),mad)
-lib_mp3dec=-lmad
+lib_mp3dec=mad
 endif
 ifeq ($(MP3LIB),mpg123)
-lib_mp3dec=-lmpg123
+lib_mp3dec=libmpg123
 endif
 ifeq ($(VORBISLIB),vorbis)
 cpp_vorbisdec=
-lib_vorbisdec=-lvorbisfile -lvorbis -logg
+lib_vorbisdec=vorbisfile vorbis ogg
 endif
 ifeq ($(VORBISLIB),tremor)
 cpp_vorbisdec=-DVORBIS_USE_TREMOR
-lib_vorbisdec=-lvorbisidec -logg
+lib_vorbisdec=vorbisidec ogg
 endif
 
 CODECLIBS :=
@@ -63,35 +67,39 @@ CFLAGS += -DUSE_CODEC_WAVE
 endif
 ifeq ($(USE_CODEC_FLAC),1)
 CFLAGS += -DUSE_CODEC_FLAC
-CODECLIBS += -lFLAC
+CODEC_PKGS += flac
 endif
 ifeq ($(USE_CODEC_OPUS),1)
-CFLAGS += -DUSE_CODEC_OPUS $(shell pkg-config --cflags opusfile 2>/dev/null)
-CODECLIBS += $(shell pkg-config --libs opusfile 2>/dev/null || echo -lopusfile -lopus)
+CFLAGS += -DUSE_CODEC_OPUS
+CODEC_PKGS += opusfile
 endif
 ifeq ($(USE_CODEC_VORBIS),1)
 CFLAGS += -DUSE_CODEC_VORBIS $(cpp_vorbisdec)
-CODECLIBS += $(lib_vorbisdec)
+CODEC_PKGS += $(lib_vorbisdec)
 endif
 ifeq ($(USE_CODEC_MP3),1)
 CFLAGS += -DUSE_CODEC_MP3
-CODECLIBS += $(lib_mp3dec)
+CODEC_PKGS += $(lib_mp3dec)
 endif
 ifeq ($(USE_CODEC_MIKMOD),1)
 CFLAGS += -DUSE_CODEC_MIKMOD
-CODECLIBS += -lmikmod
+CODEC_PKGS += libmikmod
 endif
 ifeq ($(USE_CODEC_MODPLUG),1)
 CFLAGS += -DUSE_CODEC_MODPLUG
-CODECLIBS += -lmodplug
+CODEC_PKGS += libmodplug
 endif
 ifeq ($(USE_CODEC_UMX),1)
 CFLAGS += -DUSE_CODEC_UMX
 endif
 
+PKGS_CFLAGS	:= $(shell $(SYSROOT)/../../usr/bin/pkg-config --cflags $(PKGS) $(CODEC_PKGS))
+PKGS_LIBS	:= $(shell $(SYSROOT)/../../usr/bin/pkg-config --libs $(PKGS) $(CODEC_PKGS))
+
 # Linker
-LDFLAGS = -lSDL -lz -lm $(CODECLIBS)
-CFLAGS += -Ofast -g3 -fno-common -Wall -DNQ_HACK -DNDEBUG -DELF -DTYR_VERSION=$(TYR_VERSION_NUM) -DQBASEDIR="."
+LDFLAGS = $(PKGS_LIBS) -lm
+CFLAGS += -Ofast -g3 -fno-common -Wall $(PKGS_CFLAGS) \
+			-DNQ_HACK -DNDEBUG -DELF -DTYR_VERSION=$(TYR_VERSION_NUM) -DQBASEDIR="."
 
 # Include
 INCLUDES := 
