@@ -1,6 +1,22 @@
 # Software Name
 PROGRAM = sdlquake
 
+# Platform specific
+ifeq ($(platform), )
+  INSTALLDIR ?= ./
+
+  DEBUG_CFLAGS += -DDEBUG -g3
+  OPT_CFLAGS += -Ofast
+else ifeq ($(platform), miyoo)
+  INSTALLDIR ?= /mnt
+  CHAINPREFIX  ?= /opt/miyoo
+  CROSS_COMPILE ?= $(CHAINPREFIX)/usr/bin/arm-linux-
+
+  CFLAGS += -DDINGUX -DELF
+  DEBUG_CFLAGS += -g3
+  OPT_CFLAGS += -flto -Ofast -fdata-sections -ffunction-sections -fno-PIC -fsingle-precision-constant
+endif
+
 # Compiler
 CC := $(CROSS_COMPILE)gcc
 CXX := $(CROSS_COMPILE)g++
@@ -98,8 +114,8 @@ PKGS_LIBS	:= $(shell $(SYSROOT)/../../usr/bin/pkg-config --libs $(PKGS) $(CODEC_
 
 # Linker
 LDFLAGS = $(PKGS_LIBS) -lm
-CFLAGS += -Ofast -g3 -fno-common -Wall $(PKGS_CFLAGS) \
-			-DNQ_HACK -DNDEBUG -DELF -DTYR_VERSION=$(TYR_VERSION_NUM) -DQBASEDIR="."
+CFLAGS += $(OPT_CFLAGS) -fno-common -Wall $(PKGS_CFLAGS) \
+			$(DEBUG_CFLAGS) -DNQ_HACK -DTYR_VERSION=$(TYR_VERSION_NUM) -DQBASEDIR="."
 
 # Include
 INCLUDES := 
@@ -115,6 +131,12 @@ CFILES = 			source/host.c \
 					source/net_common.c \
 					source/net_none.c \
 					source/net_dgrm.c
+
+ifeq ($(platform), )
+CFILES	+=			source/vid_sdl.c
+else ifeq ($(platform),miyoo)
+CFILES	+=			source/vid_sdl_rs97.c
+endif
 
 CFILES +=			source/bgmusic.c \
 					source/snd_codec.c					
@@ -158,7 +180,6 @@ CFILES	+=			source/sv_main.c \
 					source/pr_cmds.c \
 					source/pr_edict.c \
 					source/cd_null.c \
-					source/vid_sdl.c \
 					source/shell.c \
 					source/r_sprite.c \
 					source/sprite_model.c \
