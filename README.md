@@ -25,6 +25,36 @@ make -j$(nproc) platform=<target_name>
 
 The Makefile uses `pkg-config` to automatically resolve shared or static library dependencies.
 
+## Requirements
+
+- native
+`./id1` with necessary pak assets in $CWD of target binary (you can change path when passing argument for .e.g : `./sdlquake /home/QUAKE_1/assets`). The "id1" dirname is not hardcoded, so you could use e.g "assets" name for final dir.
+
+- MiyooCFW
+place `id1` assets directory in `/roms/QUAKE_I` dir
+
+   <details>
+   <summary>e.g data ./id1 content</summary>
+
+    ```
+    id1
+    ├── music
+    │   ├── track02.ogg
+    │   ├── track03.ogg
+    │   ├── track04.ogg
+    │   ├── track05.ogg
+    │   ├── track06.ogg
+    │   ├── track07.ogg
+    │   ├── track08.ogg
+    │   ├── track09.ogg
+    │   ├── track10.ogg
+    │   └── track11.ogg
+    ├── pak0.pak
+    └── pak1.pak
+    ```
+
+     </details>
+
 ## Background Music (BGM) Support
 
 Background music playback via external audio assets has been adopted from Quakespasm. External audio tracks can be played in various formats.
