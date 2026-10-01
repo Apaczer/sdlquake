@@ -7,14 +7,23 @@ ifeq ($(platform), )
 
   DEBUG_CFLAGS += -DDEBUG -g3
   OPT_CFLAGS += -Ofast
+  EXTRA_LDFLAGS += -lm
 else ifeq ($(platform), miyoo)
+  LTO ?= 1
   INSTALLDIR ?= /mnt
   CHAINPREFIX  ?= /opt/miyoo
   CROSS_COMPILE ?= $(CHAINPREFIX)/usr/bin/arm-linux-
 
   CFLAGS += -DDINGUX -DELF
-  DEBUG_CFLAGS += -g3
-  OPT_CFLAGS += -flto -Ofast -fdata-sections -ffunction-sections -fno-PIC -fsingle-precision-constant
+  DEBUG_CFLAGS += -g0
+  OPT_CFLAGS += -Ofast -fdata-sections -ffunction-sections -fsingle-precision-constant \
+					-fno-PIC
+  EXTRA_LDFLAGS += -no-pie -s -Wl,--as-needed -Wl,--gc-sections
+endif
+
+ifeq ($(LTO),1)
+	OPT_CFLAGS += -flto
+	EXTRA_LDFLAGS += -flto
 endif
 
 # Compiler
@@ -113,7 +122,7 @@ PKGS_CFLAGS	:= $(shell $(SYSROOT)/../../usr/bin/pkg-config --cflags $(PKGS) $(CO
 PKGS_LIBS	:= $(shell $(SYSROOT)/../../usr/bin/pkg-config --libs $(PKGS) $(CODEC_PKGS))
 
 # Linker
-LDFLAGS = $(PKGS_LIBS) -lm
+LDFLAGS = $(PKGS_LIBS) $(EXTRA_LDFLAGS)
 CFLAGS += $(OPT_CFLAGS) -fno-common -Wall $(PKGS_CFLAGS) \
 			$(DEBUG_CFLAGS) -DNQ_HACK -DTYR_VERSION=$(TYR_VERSION_NUM) -DQBASEDIR="."
 
