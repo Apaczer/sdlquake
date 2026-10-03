@@ -60,10 +60,10 @@ place `id1` assets directory in `/roms/QUAKE_I` dir
 Background music playback via external audio assets has been adopted from Quakespasm. External audio tracks can be played in various formats.
 
 Codecs can be toggled in the `Makefile` using build flags:
-- `USE_CODEC_WAVE`: WAV support (default: `0`)
-- `USE_CODEC_MP3`: MP3 support (default: `1`, backend selectable via `MP3LIB=mpg123` or `MP3LIB=mad`)
-- `USE_CODEC_VORBIS`: Ogg Vorbis support (default: `0`, backend selectable via `VORBISLIB=vorbis` or `VORBISLIB=tremor`)
-- `USE_CODEC_FLAC`: FLAC support (default: `0`)
-- `USE_CODEC_OPUS`: Opus support (default: `0`)
-- `USE_CODEC_MIKMOD` / `USE_CODEC_MODPLUG`: Tracker music support (default: `0`)
-- `USE_CODEC_UMX`: Unreal Music package support (default: `0`)
+- `USE_CODEC_WAVE`: WAV support
+- `USE_CODEC_MP3`: MP3 support, backend selectable via `MP3LIB=mpg123` (default) or `MP3LIB=mad`
+- `USE_CODEC_VORBIS`: Ogg Vorbis support, backend selectable via `VORBISLIB=vorbis` (default) or `VORBISLIB=tremor`
+- `USE_CODEC_FLAC`: FLAC support
+- `USE_CODEC_OPUS`: Opus support
+- `USE_CODEC_MIKMOD` / `USE_CODEC_MODPLUG`: Tracker music support (default: `mikmod`)
+- `USE_CODEC_UMX`: Unreal Music package support

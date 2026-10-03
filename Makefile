@@ -14,6 +14,15 @@ else ifeq ($(platform), miyoo)
   CHAINPREFIX  ?= /opt/miyoo
   CROSS_COMPILE ?= $(CHAINPREFIX)/usr/bin/arm-linux-
 
+  USE_CODEC_WAVE = 1
+  USE_CODEC_FLAC = 0
+  USE_CODEC_MP3 = 1
+  USE_CODEC_VORBIS = 0
+  USE_CODEC_OPUS = 0
+  USE_CODEC_UMX = 0
+  USE_CODEC_MIKMOD = 1
+  USE_CODEC_MODPLUG = 0
+
   CFLAGS += -DDINGUX -DELF
   DEBUG_CFLAGS += -g0
   OPT_CFLAGS += -Ofast -fdata-sections -ffunction-sections -fsingle-precision-constant \
@@ -40,14 +49,14 @@ TYR_GIT := $(shell git describe --dirty 2> /dev/null)
 TYR_VERSION := $(if $(TYR_GIT),$(TYR_GIT),$(TYR_RELEASE))
 TYR_VERSION_NUM ?= $(patsubst v%,%,$(TYR_VERSION))
 
-USE_CODEC_WAVE ?= 0
-USE_CODEC_FLAC ?= 0
+USE_CODEC_WAVE ?= 1
+USE_CODEC_FLAC ?= 1
 USE_CODEC_MP3 ?= 1
-USE_CODEC_VORBIS ?= 0
-USE_CODEC_OPUS ?= 0
-USE_CODEC_UMX ?= 0
+USE_CODEC_VORBIS ?= 1
+USE_CODEC_OPUS ?= 1
+USE_CODEC_UMX ?= 1
 # either mikmod (preferred) or modplug, not both
-USE_CODEC_MIKMOD ?= 0
+USE_CODEC_MIKMOD ?= 1
 USE_CODEC_MODPLUG ?= 0
 
 ifeq ($(USE_CODEC_MIKMOD),1)
