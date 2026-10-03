@@ -10,7 +10,7 @@ It also runs pretty well on the said platforms, even on the PAP K3S with a scree
 
 ## Building
 
-The build system produces the `sdlquake` executable.
+The build system produces the `quake` executable.
 
 To build for the default host:
 ```sh
@@ -28,7 +28,7 @@ The Makefile uses `pkg-config` to automatically resolve shared or static library
 ## Requirements
 
 - native
-`./id1` with necessary pak assets in $CWD of target binary (you can change path when passing argument for .e.g : `./sdlquake /home/QUAKE_1/assets`). The "id1" dirname is not hardcoded, so you could use e.g "assets" name for final dir.
+`./id1` with necessary pak assets in $CWD of target binary (you can change path when passing argument for .e.g : `./quake /home/QUAKE_1/assets`). The "id1" dirname is not hardcoded, so you could use e.g "assets" name for final dir.
 
 - MiyooCFW
 place `id1` assets directory in `/roms/QUAKE_I` dir

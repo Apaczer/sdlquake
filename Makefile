@@ -1,5 +1,5 @@
 # Software Name
-PROGRAM = sdlquake
+PROGRAM = quake
 
 # Platform specific
 ifeq ($(platform), )
