@@ -23,6 +23,7 @@
 
 #include "quakedef.h"
 #include "sound.h"
+#include "console.h"
 
 #if defined(USE_CODEC_OPUS)
 #include "snd_codec.h"

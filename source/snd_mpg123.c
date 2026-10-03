@@ -22,6 +22,7 @@
 
 #include "quakedef.h"
 #include "sound.h"
+#include "console.h"
 
 #if defined(USE_CODEC_MP3)
 #include "snd_codec.h"

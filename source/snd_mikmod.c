@@ -20,6 +20,7 @@
 
 #include "quakedef.h"
 #include "sound.h"
+#include "console.h"
 
 #if defined(USE_CODEC_MIKMOD)
 #include "snd_codec.h"
