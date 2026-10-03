@@ -262,7 +262,7 @@ static int probe_umx   (fshandle_t *f, const struct upkg_hdr *hdr,
 
 	if (read_typname(f, hdr, t, buf) < 0) return -1;
 	for (i = 0; mustype[i] != NULL; i++) {
-		if (!q_strcasecmp(buf, mustype[i])) {
+		if (!strcasecmp(buf, mustype[i])) {
 			t = i;
 			break;
 		}

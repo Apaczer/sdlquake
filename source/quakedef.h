@@ -35,6 +35,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mathlib.h"
 #include "port.h"
 
+#ifndef COMPILE_TIME_ASSERT
+#if defined(__cplusplus)
+/* Keep C++ case alone: Some versions of gcc will define __STDC_VERSION__ even when compiling in C++ mode. */
+#if (__cplusplus >= 201103L)
+#define COMPILE_TIME_ASSERT(name, x)  static_assert(x, #x)
+#endif
+#elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 202311L)
+#define COMPILE_TIME_ASSERT(name, x)  static_assert(x, #x)
+#elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+#define COMPILE_TIME_ASSERT(name, x) _Static_assert(x, #x)
+#endif
+#endif /**/
+#ifndef COMPILE_TIME_ASSERT
+/* universal, but may trigger -Wunused-local-typedefs */
+#define COMPILE_TIME_ASSERT(name, x) \
+	typedef int dummy_ ## name[(x) * 2 - 1]
+#endif
+
 //define        PARANOID                        // speed sapping error checking
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
