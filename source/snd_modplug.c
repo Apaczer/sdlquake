@@ -21,6 +21,7 @@
 
 #include "quakedef.h"
 #include "sound.h"
+#include "console.h"
 
 #if defined(USE_CODEC_MODPLUG)
 #include "snd_codec.h"
